@@ -105,4 +105,3 @@ usuários comuns.
 - O sistema impede duplicidade de resposta por usuário e formulário.
 - O frontend busca os formulários dinamicamente da API.
 - A lógica de cálculo fica centralizada no backend.
-- O projeto foi pensado como MVP realista para entrevista.
