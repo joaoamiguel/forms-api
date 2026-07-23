@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: iaassessment
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/iaassessment?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:root}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+server:
+  port: ${SERVER_PORT:8080}
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET:VGhpcy1pcy1hLWRlbW8tc2VjcmV0LWZvci1qd3QtY29udmVyc2lvbi1iYXNlNjQxMjM0NTY3ODkwMTI3ODkwMTI3ODk=}
+    expiration-ms: ${APP_JWT_EXPIRATION_MS:86400000}

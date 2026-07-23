@@ -1,0 +1,54 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: iaassessment-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: iaassessment
+      MYSQL_USER: iauser
+      MYSQL_PASSWORD: iapass
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpass"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    build:
+      context: ./backend
+    container_name: iaassessment-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/iaassessment?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: iauser
+      SPRING_DATASOURCE_PASSWORD: iapass
+      APP_JWT_SECRET: VGhpcy1pcy1hLWRlbW8tc2VjcmV0LWZvci1qd3QtY29udmVyc2lvbi1iYXNlNjQxMjM0NTY3ODkwMTI3ODkwMTI3ODk=
+      APP_JWT_EXPIRATION_MS: 86400000
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8080
+    container_name: iaassessment-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: http://backend:8080
+    ports:
+      - "3000:3000"
+
+volumes:
+  mysql_data:
